@@ -1,13 +1,10 @@
 import React from 'react';
 
-const Search = (props) => {
-
-  return (
-    <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" onChange={props.onSearch} />
-    </div>
-  )
-}
+const Search = ({ onSearch, search }) => (
+  <div>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text" onChange={onSearch} value={search} />
+  </div>
+)
 
 export default Search;
