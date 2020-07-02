@@ -54,7 +54,6 @@ const App = () => {
         label="Search"
         value={searchTerm}
         onInputChange={handleSearch}
-        type="text"
       />
 
       <hr />
