@@ -1,6 +1,6 @@
 import React from 'react';
 import List from './List';
-import Search from './Search';
+import InputWithLabel from './Input';
 
 const useSemiPersistentState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -49,7 +49,13 @@ const App = () => {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <Search onSearch={handleSearch} search={searchTerm} />
+      <InputWithLabel
+        id="search"
+        label="Search"
+        value={searchTerm}
+        onInputChange={handleSearch}
+        type="text"
+      />
 
       <hr />
 
