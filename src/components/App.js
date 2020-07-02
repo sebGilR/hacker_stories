@@ -2,6 +2,18 @@ import React from 'react';
 import List from './List';
 import Search from './Search';
 
+const useSemiPersistentState = () => {
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('search') || ''
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem('search', searchTerm)
+  }, [searchTerm]);
+
+  return [searchTerm, setSearchTerm]
+}
+
 const App = () => {
   const stories = [
     {
@@ -22,10 +34,11 @@ const App = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useSemiPersistentState();
 
   const handleSearch = event => {
     setSearchTerm(event.target.value);
+    localStorage.setItem('search', event.target.value);
   };
 
   const searchedStories = stories.filter(story =>
