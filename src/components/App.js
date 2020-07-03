@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import List from './List';
 import InputWithLabel from './Input';
+import Axios from 'axios';
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
@@ -70,12 +71,12 @@ const App = () => {
   const handleFetchStories = useCallback(() => {
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(url)
-      .then(response => response.json())
+    Axios
+      .get(url)
       .then(result => {
         dispatchStories({
           type: 'STORIES_FETCH_SUCCESS',
-          payload: result.hits,
+          payload: result.data.hits,
         })
       })
       .catch(() =>
