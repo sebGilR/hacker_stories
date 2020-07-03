@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import List from './List';
-import InputWithLabel from './Input';
 import Axios from 'axios';
+import SearchForm from './Form';
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
@@ -64,24 +64,26 @@ const App = () => {
     setSearchTerm(event.target.value)
   };
 
-  const handleSearchSubmit = () => {
-    setUrl(`${API_ENDPOINT}${searchTerm}`)
+  const handleSearchSubmit = event => {
+    event.preventDefault();
+    setUrl(`${API_ENDPOINT}${searchTerm}`);
   }
 
-  const handleFetchStories = useCallback(() => {
+  const handleFetchStories = useCallback(async () => {
+
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    Axios
-      .get(url)
-      .then(result => {
-        dispatchStories({
-          type: 'STORIES_FETCH_SUCCESS',
-          payload: result.data.hits,
-        })
+    try {
+      const result = await Axios.get(url)
+
+      dispatchStories({
+        type: 'STORIES_FETCH_SUCCESS',
+        payload: result.data.hits,
       })
-      .catch(() =>
-        dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
-      );
+    } catch {
+      dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
+    }
+
   }, [url]);
 
   React.useEffect(() => {
@@ -99,22 +101,12 @@ const App = () => {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <InputWithLabel
-        id="search"
-        value={searchTerm}
-        isFocused
-        onInputChange={handleSearchInput}
-      >
-        <strong>Search:</strong>
-      </InputWithLabel>
+      <SearchForm
+        searchTerm={searchTerm}
+        onSearchInput={handleSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+      />
 
-      <button
-        type='button'
-        disabled={!searchTerm}
-        onClick={handleSearchSubmit}
-      >
-        Search
-      </button>
       <hr />
 
       {stories.isError && <p>Something went wrong ...</p>}
