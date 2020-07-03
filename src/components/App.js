@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import List from './List';
 import InputWithLabel from './Input';
 
@@ -15,7 +15,7 @@ const useSemiPersistentState = (key, initialState) => {
 }
 
 const App = () => {
-  const stories = [
+  const initialStories = [
     {
       title: 'React',
       url: 'https://reactjs.org/',
@@ -34,7 +34,33 @@ const App = () => {
     },
   ];
 
+  const getAsyncStories = () =>
+    new Promise(resolve =>
+      setTimeout(() =>
+        resolve({ data: { stories: initialStories } }),
+        2000
+      )
+    );
+
+
+  React.useEffect(() => {
+    getAsyncStories()
+      .then(result => {
+        setSories(result.data.stories);
+      });
+  }, []);
+
   const [searchTerm, setSearchTerm] = useSemiPersistentState('search', '');
+
+  const [stories, setSories] = useState([]);
+
+  const handleRemoveStory = item => {
+    const newStories = stories.filter(
+      story => item.objectID !== story.objectID
+    )
+
+    setSories(newStories);
+  };
 
   const handleSearch = event => {
     setSearchTerm(event.target.value);
@@ -59,7 +85,7 @@ const App = () => {
 
       <hr />
 
-      <List list={searchedStories} />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
     </div>
   );
 };
